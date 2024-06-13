@@ -4,6 +4,7 @@ public partial class DialogWindow : Form
 {
 	private bool forceClose = false;
 	private TimeSpan timeToConfirm = new TimeSpan(0, 0, 15);
+	private const string windowsText = "Keep changes?";
 	public DialogWindow(Icon icon)
 	{
 		InitializeComponent();
@@ -19,7 +20,16 @@ public partial class DialogWindow : Form
 
 	private async Task StartRevertTimer()
 	{
-		await Task.Delay(timeToConfirm);
+		TimeSpan oneSecond = new TimeSpan(0, 0, 1);
+		for (int i = 0; i < timeToConfirm.TotalSeconds; i++)
+		{
+			await Task.Delay(oneSecond);
+			Invoke(new Action(() =>
+			{
+				Text = $"{windowsText} ({(timeToConfirm - i * oneSecond).TotalSeconds} s)";
+			}));
+
+		}
 
 		forceClose = true;
 		Invoke(new Action(() =>

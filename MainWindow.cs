@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace ChangeScreenResolution_GUI;
@@ -8,7 +9,7 @@ public partial class MainWindow : Form
 	const string iconPath = "../../../res/5ee37bf62e6ec804b72e580a_cmis logo 256.ico";
 	string nircmdExeFullPath = "";
 	const int bpc = 32;
-	ScreenResolution defaultResolution = new ScreenResolution() { Width = 1920, Height = 1080, Text = "Full HD" };
+	ScreenResolution defaultResolution;
 	int defaultRefreshRate = 60;
 	internal ScreenResolution[] availableResolutions;
 	internal int[] availableRefreshRates = new int[]
@@ -23,14 +24,21 @@ public partial class MainWindow : Form
 	{
 		InitializeComponent();
 
+		ScreenResolution? res = GetDefaultScreenResolution();
+		if(res is null)
+		{
+			throw new Exception("Primary screen not detected");
+		}
+		defaultResolution = res;
+
 		Icon = new Icon(iconPath);
 		button_apply.Click += Button_apply_Click;
 		nircmdExeFullPath = Path.GetFullPath(nircmdExePath);
 
 		availableResolutions = new[]
 		{
-			new ScreenResolution() { Width = 1280, Height = 720, Text = "HD" },
 			defaultResolution,
+			new ScreenResolution() { Width = 1280, Height = 720, Text = "HD" },
 			new ScreenResolution() { Width = 1920, Height = 1200 },
 			new ScreenResolution() { Width = 2560, Height = 1080 },
 			new ScreenResolution() { Width = 2560, Height = 1440, Text = "Quad HD" },
@@ -38,9 +46,26 @@ public partial class MainWindow : Form
 			new ScreenResolution() { Width = 3440, Height = 1440 },
 			new ScreenResolution() { Width = 3840, Height = 1600 },
 			new ScreenResolution() { Width = 3840, Height = 2160, Text = "Ultra HD (4K)" },
-		};
+		}.ToImmutableArray()
+		.OrderByDescending(el => el.Width * el.Height)
+		.Reverse()
+		.ToArray();
 
 		FillInComboBoxes();
+		ResetChoicesToDefaultValues();
+	}
+
+	private ScreenResolution? GetDefaultScreenResolution()
+	{
+		if (Screen.PrimaryScreen is null) return null;
+		Rectangle primaryScreenBounds = Screen.PrimaryScreen.Bounds;
+
+		return new ScreenResolution() 
+		{ 
+			Width = primaryScreenBounds.Width, 
+			Height = primaryScreenBounds.Height ,
+			Text = "Default"
+		};
 	}
 
 	private void Button_apply_Click(object? sender, EventArgs e)
@@ -58,7 +83,14 @@ public partial class MainWindow : Form
 		if(result != DialogResult.OK)
 		{
 			ApplyScreenSettings(defaultResolution, defaultRefreshRate);
+			ResetChoicesToDefaultValues();
 		}
+	}
+
+	private void ResetChoicesToDefaultValues()
+	{
+		comboBox_resolution.SelectedIndex = availableResolutions.ToImmutableArray().IndexOf(defaultResolution);
+		comboBox_refreshRate.SelectedIndex = availableRefreshRates.ToImmutableArray().IndexOf(defaultRefreshRate);
 	}
 
 	private void ApplyScreenSettings(ScreenResolution screenResolution, int refreshRate)
