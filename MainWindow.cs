@@ -24,11 +24,7 @@ public partial class MainWindow : Form
 	{
 		InitializeComponent();
 
-		ScreenResolution? res = GetDefaultScreenResolution();
-		if(res is null)
-		{
-			throw new Exception("Primary screen not detected");
-		}
+		ScreenResolution? res = GetDefaultScreenResolution() ?? throw new Exception("Primary screen not detected");
 		defaultResolution = res;
 
 		Icon = new Icon(iconPath);
@@ -39,6 +35,7 @@ public partial class MainWindow : Form
 		{
 			defaultResolution,
 			new ScreenResolution() { Width = 1280, Height = 720, Text = "HD" },
+			new ScreenResolution() { Width = 1920, Height = 1080, Text = "Full HD" },
 			new ScreenResolution() { Width = 1920, Height = 1200 },
 			new ScreenResolution() { Width = 2560, Height = 1080 },
 			new ScreenResolution() { Width = 2560, Height = 1440, Text = "Quad HD" },
@@ -47,6 +44,7 @@ public partial class MainWindow : Form
 			new ScreenResolution() { Width = 3840, Height = 1600 },
 			new ScreenResolution() { Width = 3840, Height = 2160, Text = "Ultra HD (4K)" },
 		}.ToImmutableArray()
+		.DistinctBy(el => el.Width * el.Height)
 		.OrderByDescending(el => el.Width * el.Height)
 		.Reverse()
 		.ToArray();
@@ -104,7 +102,7 @@ public partial class MainWindow : Form
 			Arguments = $"setdisplay {screenResolution.Width} {screenResolution.Height} {bpc} {refreshRate}",
 			FileName = nircmdExeFullPath
 		};
-		Process? process = Process.Start(psi);
+		_ = Process.Start(psi);
 	}
 
 	private void FillInComboBoxes()

@@ -26,7 +26,7 @@ public partial class DialogWindow : Form
 			await Task.Delay(oneSecond);
 			Invoke(new Action(() =>
 			{
-				Text = $"{windowsText} ({(timeToConfirm - i * oneSecond).TotalSeconds} s)";
+				Text = $"{windowsText} ({(timeToConfirm - (i + 1) * oneSecond).TotalSeconds} s)";
 			}));
 
 		}
