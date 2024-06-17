@@ -11,7 +11,7 @@ internal static class AppUpdater
 {
 	internal static async Task UpdateMyApp()
 	{
-		var mgr = new UpdateManager("https://the.place/you-host/updates");
+		var mgr = new UpdateManager("https://github.com/IgnacBrychta/ChangeScreenResolution_GUI");
 
 		if (!mgr.IsInstalled) return; 
 
