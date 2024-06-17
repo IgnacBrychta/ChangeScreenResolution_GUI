@@ -14,6 +14,7 @@
     <Title>Switch Resolution Switcher</Title>
     <Authors>someone</Authors>
     <Copyright>MIT</Copyright>
+    <Version>1.0.11</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
