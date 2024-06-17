@@ -35,13 +35,11 @@ public partial class MainWindow : Form
 		string tempPath = Path.GetTempPath();
 		nircmdExeFullPath = Path.Combine(tempPath, "nircmd.exe");
 		iconPath = Path.Combine(tempPath, "app_icon.ico");
-		MessageBox.Show("1");
-		MessageBox.Show("2");
+		
 		// Extract the embedded resources
 		ExtractResource("ChangeScreenResolution_GUI.nircmd.nircmd.exe", nircmdExeFullPath);
-		MessageBox.Show("3");
 		ExtractResource("ChangeScreenResolution_GUI.res.cmis logo.ico", iconPath);
-		MessageBox.Show("4");
+		
 		button_apply.Click += Button_apply_Click;
 		Icon = new Icon(iconPath);
 
