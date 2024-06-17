@@ -31,6 +31,8 @@ jobs:
 
       - name: Create Velopack Release
         run: |
+          dotnet tool install -g vpk
+          vpk download github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI
           vpk pack -u MyUniqueIdentifier -v ${{ steps.get-version.outputs.version }} -p publish --packDir publish --channel win
           vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --publish --releaseName "ChangeScreenResolution_GUI ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }}
         env:
