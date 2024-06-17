@@ -42,4 +42,4 @@ jobs:
 
       - name: Upload Velopack Release to GitHub
         run: |
-          vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --token ${{ secrets.GITHUB_TOKEN }} --publish --releaseName "ChangeScreenResolution_GUI ${{ env.VERSION }}" --tag "v${{ steps.get-version.outputs.version }}"
+          vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --token ${{ secrets.GITHUB_TOKEN }} --publish --releaseName "ChangeScreenResolution_GUI ${{ steps.get-version.outputs.version }}" --tag "v${{ steps.get-version.outputs.version }}"
