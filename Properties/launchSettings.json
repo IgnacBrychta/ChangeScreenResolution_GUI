@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ChangeScreenResolution_GUI": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
