@@ -1,17 +1,22 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Reflection;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using System.Drawing;
 
 namespace ChangeScreenResolution_GUI;
 
 public partial class MainWindow : Form
 {
-	const string nircmdExePath = "../../../nircmd/nircmd.exe";
-	const string iconPath = "../../../res/5ee37bf62e6ec804b72e580a_cmis logo 256.ico";
 	string nircmdExeFullPath = "";
+	string iconPath = "";
 	const int bpc = 32;
 	ScreenResolution defaultResolution;
 	int defaultRefreshRate = 60;
 	internal ScreenResolution[] availableResolutions;
+	const string tempFolderName = "ChangeScreenResolution_GUI_Temp";
 	internal int[] availableRefreshRates = new int[]
 	{
 		24,
@@ -27,9 +32,16 @@ public partial class MainWindow : Form
 		ScreenResolution? res = GetDefaultScreenResolution() ?? throw new Exception("Primary screen not detected");
 		defaultResolution = res;
 
+		string tempPath = Path.GetTempPath();
+		nircmdExeFullPath = Path.Combine(tempPath, "nircmd.exe");
+		iconPath = Path.Combine(tempPath, "app_icon.ico");
+
 		Icon = new Icon(iconPath);
 		button_apply.Click += Button_apply_Click;
-		nircmdExeFullPath = Path.GetFullPath(nircmdExePath);
+
+		// Extract the embedded resources
+		ExtractResource("ChangeScreenResolution_GUI.nircmd.nircmd.exe", nircmdExeFullPath);
+		ExtractResource("ChangeScreenResolution_GUI.res.cmis logo.ico", iconPath);
 
 		availableResolutions = new[]
 		{
@@ -51,6 +63,22 @@ public partial class MainWindow : Form
 
 		FillInComboBoxes();
 		ResetChoicesToDefaultValues();
+	}
+
+	private void ExtractResource(string resourceName, string outputPath)
+	{
+		using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+		{
+			if (stream == null)
+			{
+				throw new FileNotFoundException("Resource not found: " + resourceName);
+			}
+
+			using (FileStream fileStream = new FileStream(outputPath, FileMode.Create))
+			{
+				stream.CopyTo(fileStream);
+			}
+		}
 	}
 
 	private ScreenResolution? GetDefaultScreenResolution()

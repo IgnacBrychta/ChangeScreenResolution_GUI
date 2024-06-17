@@ -39,7 +39,13 @@
     <PackageReference Include="Velopack" Version="0.0.359" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="nircmd\nircmd.exe" />
+		<EmbeddedResource Include="res\cmis logo.ico" />
+	</ItemGroup>
+
+
+	<ItemGroup>
     <None Update="res\cmis logo.ico">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
