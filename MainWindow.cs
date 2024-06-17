@@ -85,7 +85,7 @@ public partial class MainWindow : Form
 		return new ScreenResolution() 
 		{ 
 			Width = primaryScreenBounds.Width, 
-			Height = primaryScreenBounds.Height ,
+			Height = primaryScreenBounds.Height,
 			Text = "Default"
 		};
 	}
