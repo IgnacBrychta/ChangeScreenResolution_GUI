@@ -67,19 +67,14 @@ public partial class MainWindow : Form
 
 	private void ExtractResource(string resourceName, string outputPath)
 	{
-		using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+		using Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+		if (stream is null)
 		{
-			if (stream == null)
-			{
-				MessageBox.Show("exception");
-				throw new FileNotFoundException("Resource not found: " + resourceName);
-			}
-
-			using (FileStream fileStream = new FileStream(outputPath, FileMode.Create))
-			{
-				stream.CopyTo(fileStream);
-			}
+			throw new FileNotFoundException("Resource not found: " + resourceName);
 		}
+
+		using FileStream fileStream = new FileStream(outputPath, FileMode.Create);
+		stream.CopyTo(fileStream);
 	}
 
 	private ScreenResolution? GetDefaultScreenResolution()
