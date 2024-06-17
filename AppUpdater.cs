@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Velopack;
+﻿using Velopack;
+using Velopack.Sources;
 
 namespace ChangeScreenResolution_GUI;
 
@@ -11,7 +7,7 @@ internal static class AppUpdater
 {
 	internal static async Task CheckForUpdateAndApply()
 	{
-		var mgr = new UpdateManager("https://github.com/IgnacBrychta/ChangeScreenResolution_GUI/releases");
+		var mgr = new UpdateManager(new GithubSource("https://github.com/IgnacBrychta/ChangeScreenResolution_GUI", null, false));
 		var newVersion = await mgr.CheckForUpdatesAsync();
 		// check for new version
 		if (newVersion == null)
