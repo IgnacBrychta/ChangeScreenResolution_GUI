@@ -13,12 +13,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Get Version from Project File
-        id: get-version
-        shell: bash
+      - name: Get version from project file
         run: |
           version=$(grep -oE '<Version>[^<]+' ChangeScreenResolution_GUI.csproj | sed 's/<Version>//')
           echo "VERSION=${version}" >> $GITHUB_ENV
+        shell: bash
 
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
