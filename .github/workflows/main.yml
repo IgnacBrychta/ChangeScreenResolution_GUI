@@ -16,7 +16,7 @@ jobs:
       - name: Get Version from Project File
         id: get-version
         shell: bash
-        run: echo "version=$(grep -oE '<Version>[^<]+' MyApplication/MyApplication.csproj | sed 's/<Version>//')" >> $GITHUB_OUTPUT
+        run: echo "version=$(grep -oE '<Version>[^<]+' ChangeScreenResolution_GUI\ChangeScreenResolution_GUI.csproj | sed 's/<Version>//')" >> $GITHUB_OUTPUT
 
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
