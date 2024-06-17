@@ -7,23 +7,8 @@ internal static class AppUpdater
 {
 	internal static async Task CheckForUpdateAndApply()
 	{
-		var cancellationTokenSource = new CancellationTokenSource();
-		var cancellationToken = cancellationTokenSource.Token;
-
-		Task updateInfo = Task.Run(() =>
-		{
-			if (cancellationToken.IsCancellationRequested)
-			{
-				return;
-			}
-
-			MessageBox.Show(
-				"Checking for updates, please wait...",
-				"Automatic Update",
-				MessageBoxButtons.OK,
-				MessageBoxIcon.Information
-			);
-		}, cancellationToken);
+		InfoWindow infoWindow = new InfoWindow(null, "Automatic Update", "Checking for updates, please wait...");
+		infoWindow.Show();
 
 		var mgr = new UpdateManager(new GithubSource("https://github.com/IgnacBrychta/ChangeScreenResolution_GUI", null, false));
 		var newVersion = await mgr.CheckForUpdatesAsync();
@@ -31,6 +16,7 @@ internal static class AppUpdater
 		if (newVersion == null)
 			return; // no update available
 
+		infoWindow.Close();
 		DialogResult result = MessageBox.Show(
 			"New release is available. Click OK to download and install it, click Cancel to close the program.",
 			"New release available",
@@ -42,17 +28,7 @@ internal static class AppUpdater
 			Environment.Exit(1);
 		}
 
-		cancellationTokenSource.Cancel();
-
-		_ = new Task(() =>
-		{
-			_ = MessageBox.Show(
-				"Downloading and installing the update, please wait...",
-				"Automatic Update",
-				MessageBoxButtons.OK,
-				MessageBoxIcon.Information
-				);
-		});
+		infoWindow = new InfoWindow(null, "Automatic Update", "Downloading and installing the update, please wait...");
 
 		// download new version
 		await mgr.DownloadUpdatesAsync(newVersion);
