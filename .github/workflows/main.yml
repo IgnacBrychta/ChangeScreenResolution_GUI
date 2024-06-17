@@ -16,19 +16,43 @@ jobs:
       - name: Get Version from Project File
         id: get-version
         shell: bash
-        run: echo "version=$(grep -oE '<Version>[^<]+' ChangeScreenResolution_GUI.csproj | sed 's/<Version>//')" >> $GITHUB_OUTPUT
+        run: |
+          version=$(grep -oE '<Version>[^<]+' ChangeScreenResolution_GUI.csproj | sed 's/<Version>//')
+          echo "VERSION=${version}" >> $GITHUB_ENV
 
-      - name: Install .NET
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: '8.0.x'
 
-      - name: Publish Application
-        run: dotnet publish ChangeScreenResolution_GUI.csproj -c Release -o publish -r win-x64 --self-contained true
+      - name: Restore Dependencies
+        run: dotnet restore
 
-      - name: Create Velopack Release
+      - name: Build and Publish Application
+        run: dotnet publish /p:Configuration=Release \
+              /p:Platform="Any CPU" \
+              /p:PublishDir=.\publish \
+              /p:PublishProtocol=FileSystem \
+              /p:_TargetId=Folder \
+              /p:TargetFramework=net8.0-windows \
+              /p:RuntimeIdentifier=win-x64 \
+              /p:SelfContained=false \
+              /p:PublishSingleFile=true \
+              /p:PublishReadyToRun=false
+
+      - name: Install Velopack
+        run: dotnet tool install -g vpk
+
+      - name: Download latest release
         run: |
-          dotnet tool install -g vpk
           vpk download github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI
-          vpk pack -u MyUniqueIdentifierTest -v ${{ steps.get-version.outputs.version }} -p publish
-          vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --publish --releaseName "ChangeScreenResolution_GUI ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }} --token ${{ secrets.VELOPACK_UPLOAD_BUILD }}
+        
+      - name: Package Application with Velopack
+        run: |
+          vpk pack -u MyUniqueIdentifierTest -v "${{ env.VERSION }}" --packDir .\publish --channel win -e ChangeScreenResolution_GUI.exe
+
+      - name: Upload Velopack Release to GitHub
+        run: |
+          vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --token ${{ secrets.GITHUB_TOKEN }} --publish --releaseName "ChangeScreenResolution_GUI ${{ env.VERSION }}" --tag v${{ env.VERSION }}
+        env:
+          PATH: ${{ env.PATH }}:${{ env.USERPROFILE }}\.dotnet\tools
