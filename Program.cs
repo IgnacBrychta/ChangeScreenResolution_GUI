@@ -10,9 +10,9 @@ internal static class Program
 	[STAThread]
 	static void Main()
 	{
-		// VelopackApp.Build().Run();
-		// Task update = AppUpdater.UpdateMyApp();
-		// update.Wait();
+		VelopackApp.Build().Run();
+		Task update = AppUpdater.UpdateMyApp();
+		update.Wait();
 		// To customize application configuration such as set high DPI settings or default font,
 		// see https://aka.ms/applicationconfiguration.
 		ApplicationConfiguration.Initialize();
