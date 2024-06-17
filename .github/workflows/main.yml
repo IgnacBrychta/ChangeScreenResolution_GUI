@@ -27,16 +27,7 @@ jobs:
         run: dotnet restore
 
       - name: Build and Publish Application
-        run: dotnet publish /p:Configuration=Release \
-              /p:Platform="Any CPU" \
-              /p:PublishDir=.\publish \
-              /p:PublishProtocol=FileSystem \
-              /p:_TargetId=Folder \
-              /p:TargetFramework=net8.0-windows \
-              /p:RuntimeIdentifier=win-x64 \
-              /p:SelfContained=false \
-              /p:PublishSingleFile=true \
-              /p:PublishReadyToRun=false
+        run: dotnet publish --configuration Release --framework net8.0-windows --runtime win-x64 -o .\publish --self-contained false /p:PublishSingleFile=true
 
       - name: Install Velopack
         run: dotnet tool install -g vpk
