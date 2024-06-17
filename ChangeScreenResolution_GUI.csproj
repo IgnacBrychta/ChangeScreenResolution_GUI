@@ -1,59 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>res\cmis logo.ico</ApplicationIcon>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <SignAssembly>False</SignAssembly>
-    <Description>Switches primary display resolution and refresh rate</Description>
-    <PackageIcon></PackageIcon>
-    <Title>Switch Resolution Switcher</Title>
-    <Authors>Ignác Brychta</Authors>
-    <Copyright>MIT</Copyright>
-    <Version>1.0.6</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationIcon>res\cmis logo.ico</ApplicationIcon>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<SignAssembly>False</SignAssembly>
+		<Description>Switches primary display resolution and refresh rate</Description>
+		<Title>Switch Resolution Switcher</Title>
+		<Authors>Ignác Brychta</Authors>
+		<Copyright>MIT</Copyright>
+		<Version>1.0.7</Version>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>embedded</DebugType>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DebugType>embedded</DebugType>
+		<FileAlignment>512</FileAlignment>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>embedded</DebugType>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="res\cmis logo.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="nircmd\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Velopack" Version="0.0.359" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>embedded</DebugType>
+		<FileAlignment>512</FileAlignment>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="nircmd\nircmd.exe" />
 		<EmbeddedResource Include="res\cmis logo.ico" />
 	</ItemGroup>
 
-
 	<ItemGroup>
-    <None Update="res\cmis logo.ico">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-		<None Update="nircmd\nircmd.exe">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-  </ItemGroup>
-
+		<PackageReference Include="Velopack" Version="0.0.359" />
+	</ItemGroup>
 </Project>
