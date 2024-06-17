@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>5ee37bf62e6ec804b72e580a_cmis logo 256.ico</ApplicationIcon>
+    <ApplicationIcon>res\cmis logo.ico</ApplicationIcon>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <SignAssembly>False</SignAssembly>
     <Description>Resolution Switcher</Description>
@@ -28,11 +28,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="5ee37bf62e6ec804b72e580a_cmis logo 256.ico" />
+    <Content Include="res\cmis logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="nircmd\*.*" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Velopack" Version="0.0.359" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="res\cmis logo.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

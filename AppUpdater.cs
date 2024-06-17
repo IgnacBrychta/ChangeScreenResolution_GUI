@@ -11,7 +11,7 @@ internal static class AppUpdater
 {
 	internal static async Task CheckForUpdateAndApply()
 	{
-		var mgr = new UpdateManager("E:\\ChangeScreenResolution_GUI\\Releases");
+		var mgr = new UpdateManager("https://github.com/IgnacBrychta/ChangeScreenResolution_GUI");
 		var newVersion = await mgr.CheckForUpdatesAsync();
 		// check for new version
 		if (newVersion == null)
