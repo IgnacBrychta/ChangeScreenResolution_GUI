@@ -38,7 +38,7 @@ jobs:
         
       - name: Package Application with Velopack
         run: |
-          vpk pack -u HELP -p .\publish -e ChangeScreenResolution_GUI.exe -v ${{ steps.get-version.outputs.version }}
+          vpk pack -u ChangeScreenResolution_GUI -p .\publish -e ChangeScreenResolution_GUI.exe -v ${{ steps.get-version.outputs.version }}
 
       - name: Upload Velopack Release to GitHub
         run: |
