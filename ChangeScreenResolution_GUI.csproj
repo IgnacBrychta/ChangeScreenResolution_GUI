@@ -9,12 +9,12 @@
     <ApplicationIcon>res\cmis logo.ico</ApplicationIcon>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <SignAssembly>False</SignAssembly>
-    <Description>Resolution Switcher</Description>
+    <Description>Switches primary display resolution and refresh rate</Description>
     <PackageIcon></PackageIcon>
     <Title>Switch Resolution Switcher</Title>
-    <Authors>someone</Authors>
+    <Authors>Ignác Brychta</Authors>
     <Copyright>MIT</Copyright>
-    <Version>1.0.11</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
