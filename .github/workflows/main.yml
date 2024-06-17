@@ -4,25 +4,34 @@ on:
   push:
     branches:
       - master
+
 jobs:
   deploy-to-github-releases:
     runs-on: windows-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Get Version from Project File
         id: get-version
         shell: bash
         run: echo "version=$(grep -oE '<Version>[^<]+' ChangeScreenResolution_GUI.csproj | sed 's/<Version>//')" >> $GITHUB_OUTPUT
+
       - name: Install .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
       - name: Publish Application
         run: dotnet publish ChangeScreenResolution_GUI.csproj -c Release -o publish -r win-x64 --self-contained true
+
+      - name: Install Velopack
+        run: dotnet tool install -g vpk
+
       - name: Create Velopack Release
         run: |
-          dotnet tool install -g vpk
-          vpk download github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI
-          vpk pack -u MyUniqueIdentifier -v ${{ steps.get-version.outputs.version }} -p publish
+          vpk pack -u MyUniqueIdentifier -v ${{ steps.get-version.outputs.version }} -p publish --packDir publish --channel win
           vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --publish --releaseName "ChangeScreenResolution_GUI ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }}
+        env:
+          PATH: ${{ secrets.PATH }}:$PATH
