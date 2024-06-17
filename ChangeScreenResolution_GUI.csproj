@@ -14,7 +14,7 @@
     <Title>Switch Resolution Switcher</Title>
     <Authors>Ignác Brychta</Authors>
     <Copyright>MIT</Copyright>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -50,6 +50,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+		<None Update="nircmd\nircmd.exe">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
   </ItemGroup>
 
 </Project>
