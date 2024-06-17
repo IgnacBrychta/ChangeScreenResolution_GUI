@@ -11,7 +11,7 @@ internal static class Program
 	[STAThread]
 	static void Main()
 	{
-#if !RELEASE
+#if RELEASE
 		VelopackApp.Build().Run();
 		try
 		{
