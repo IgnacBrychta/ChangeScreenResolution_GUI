@@ -30,4 +30,8 @@
     <Content Include="5ee37bf62e6ec804b72e580a_cmis logo 256.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Velopack" Version="0.0.359" />
+  </ItemGroup>
+
 </Project>
