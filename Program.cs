@@ -21,7 +21,7 @@ internal static class Program
 		catch (Exception)
 		{
 			_ = MessageBox.Show(
-				"Unable to check for updates; quitting",
+				"Unable to check for updates, the program must always be up-to-date; quitting",
 				"Update check failed.",
 				MessageBoxButtons.OK,
 				MessageBoxIcon.Error

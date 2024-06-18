@@ -16,16 +16,14 @@ public partial class MainWindow : Form
 	string csrExeFullPath = "";
 	const int bpc = 32;
 	ScreenResolution defaultResolution;
-	int defaultRefreshRate = 60;
 	internal List<ScreenResolution> availableResolutions;
 	const string tempFolderName = "ChangeScreenResolution_GUI_Temp";
 	const int noItemSelectedIndex = -1;
-	public MainWindow()
+	string mainDisplayName;
+    public MainWindow()
 	{
 		InitializeComponent();
 
-		ScreenResolution? res = GetDefaultScreenResolution() ?? throw new Exception("Primary screen not detected");
-		defaultResolution = res;
 
 		string tempPath = Path.GetTempPath();
 		nircmdExeFullPath = Path.Combine(tempPath, "nircmd.exe");
@@ -42,6 +40,9 @@ public partial class MainWindow : Form
 		Icon = new Icon(iconPath);
 
 		availableResolutions = GetAllAvailableScreenResolutions();
+
+		ScreenResolution? res = GetCurrentScreenResolution();
+		defaultResolution = res;
 
 		FillInComboBoxes();
 		ResetChoicesToDefaultValues();
@@ -66,7 +67,7 @@ public partial class MainWindow : Form
 	{
 		List<ScreenResolution> result = new List<ScreenResolution>();
 		string displays =
-#if DEBUG
+#if PVDD
 @"
 Connected display devices:
   [0] \\.\DISPLAY1                  Microsoft Hyper-V Video
@@ -104,12 +105,13 @@ Connected display devices:
 #if DEBUG
 			@"\\\\.\\DISPLAY\d{1,2}\s+NVIDIA GeForce RTX 3060 Laptop GPU";
 #else
-			@"\\\\.\\DISPLAY\d{1,2}\s+Parsec Virtual Display Adapter";
+            @"\\\\.\\DISPLAY\d{1,2}\s+Parsec Virtual Display Adapter";
 #endif
 		Match match = Regex.Match(displays, patternDisplays);
 		string display = match.Value.Split(" ")[0];
+		mainDisplayName = display;
 		string availableDisplayModes =
-#if DEBUG
+#if PVDD
 			@"
 Display modes for \\.\DISPLAY6:
   1920x1080 32bit @60Hz default
@@ -205,7 +207,7 @@ Display modes for \\.\DISPLAY6:
   1800x1200 32bit @60Hz default
 ";
 #else
-		LaunchScreenResolutionUtil($"/d={display} /m");
+        LaunchScreenResolutionUtil($"/d={display} /m");
 #endif
 
 		string patternDisplayModes = @"(?<resolution>\d+x\d+)\s+32bit @(?<refresh_rate>\d+Hz) default";
@@ -215,11 +217,7 @@ Display modes for \\.\DISPLAY6:
 			int width, height, refreshRate;
 			try
 			{
-				string[] widthAndHeight = mode.Groups["resolution"].Value.Split("x");
-				string refreshRateText = mode.Groups["refresh_rate"].Value;
-				width = int.Parse(widthAndHeight[0]);
-				height = int.Parse(widthAndHeight[1]);
-				refreshRate = int.Parse(refreshRateText.Substring(0, refreshRateText.Length - 2));
+				ParseScreenInfo(mode, out width, out height, out refreshRate);	
 			}
 			catch (Exception) { continue; }
 
@@ -245,6 +243,15 @@ Display modes for \\.\DISPLAY6:
 		AddTextModifiers(result);
 		return result;
 	}
+
+	private void ParseScreenInfo(Match match, out int width, out int height, out int refreshRate)
+	{
+        string[] widthAndHeight = match.Groups["resolution"].Value.Split("x");
+        string refreshRateText = match.Groups["refresh_rate"].Value;
+        width = int.Parse(widthAndHeight[0]);
+        height = int.Parse(widthAndHeight[1]);
+        refreshRate = int.Parse(refreshRateText.Substring(0, refreshRateText.Length - 2));
+    }
 
 	private static void RemoveUnsupportedResolutions(List<ScreenResolution> screenResolutions)
 	{
@@ -322,15 +329,26 @@ Display modes for \\.\DISPLAY6:
 		stream.CopyTo(fileStream);
 	}
 
-	private ScreenResolution? GetDefaultScreenResolution()
+	private ScreenResolution GetCurrentScreenResolution()
 	{
-		if (Screen.PrimaryScreen is null) return null;
-		Rectangle primaryScreenBounds = Screen.PrimaryScreen.Bounds;
+		string rawText = LaunchScreenResolutionUtil("/l");
+		string pattern = @"{display_param}.*?Settings: (?<resolution>\d+x\d+) \d+bit @(?<refresh_rate>\d+Hz)";
 
-		return new ScreenResolution() 
+		pattern = pattern.Replace("{display_param}", Regex.Escape(mainDisplayName));
+		Match match = Regex.Match(rawText, pattern, RegexOptions.Singleline);
+
+        int width, height, refreshRate;
+        try
+        {
+            ParseScreenInfo(match, out width, out height, out refreshRate);
+        }
+        catch (Exception) { throw; }
+
+        return new ScreenResolution() 
 		{ 
-			Width = primaryScreenBounds.Width, 
-			Height = primaryScreenBounds.Height,
+			Width = width,
+			Height = height,
+			RefreshRates = new List<int>() { refreshRate },
 			Text = "Default"
 		};
 	}
@@ -341,24 +359,34 @@ Display modes for \\.\DISPLAY6:
 		{
 			return;
 		}
-		ScreenResolution screenResolution = availableResolutions[comboBox_resolution.SelectedIndex];
-		int refreshRate = screenResolution.RefreshRates[comboBox_refreshRate.SelectedIndex];
+		ScreenResolution desired = availableResolutions[comboBox_resolution.SelectedIndex];
+		int refreshRate = desired.RefreshRates[comboBox_refreshRate.SelectedIndex];
 
-		ApplyScreenSettings(screenResolution, refreshRate);
+		bool success = ApplyScreenSettings(desired, refreshRate);
+		if (!success)
+		{
+			ApplyScreenSettings(defaultResolution, defaultResolution.RefreshRates.First());
+			ResetChoicesToDefaultValues();
+			return;
+		}
+
 		DialogResult result = new DialogWindow(Icon!).ShowDialog();
 		if(result != DialogResult.OK)
 		{
-			ApplyScreenSettings(defaultResolution, defaultRefreshRate);
+			ApplyScreenSettings(defaultResolution, defaultResolution.RefreshRates.First());
 			ResetChoicesToDefaultValues();
 		}
 	}
 
 	private void ResetChoicesToDefaultValues()
 	{
-		comboBox_resolution.SelectedIndex = availableResolutions.ToImmutableArray().IndexOf(defaultResolution);
+		ScreenResolution startup = availableResolutions.First(el => el.Width == defaultResolution.Width && el.Height == defaultResolution.Height);
+
+        comboBox_resolution.SelectedIndex = availableResolutions.IndexOf(startup);
+		comboBox_refreshRate.SelectedIndex = startup.RefreshRates.IndexOf(startup.RefreshRates.First());
 	}
 
-	private void ApplyScreenSettings(ScreenResolution screenResolution, int refreshRate)
+	private bool ApplyScreenSettings(ScreenResolution desired, int refreshRate)
 	{
 		ProcessStartInfo psi = new ProcessStartInfo()
 		{
@@ -366,11 +394,19 @@ Display modes for \\.\DISPLAY6:
 			RedirectStandardOutput = false,
 			RedirectStandardError = false,
 			RedirectStandardInput = false,
-			Arguments = $"setdisplay {screenResolution.Width} {screenResolution.Height} {bpc} {refreshRate}",
+			Arguments = $"setdisplay {desired.Width} {desired.Height} {bpc} {refreshRate}",
 			FileName = nircmdExeFullPath,
 			CreateNoWindow = true,
 		};
-		_ = Process.Start(psi);
+		Process.Start(psi)!.WaitForExit();
+
+		return CheckScreenSettingsChangeSucces(desired);
+	}
+
+	private bool CheckScreenSettingsChangeSucces(ScreenResolution previous)
+	{
+		ScreenResolution current = GetCurrentScreenResolution();
+		return current.Width == previous.Width && current.Height == previous.Height;
 	}
 
 	private void FillInComboBoxes()
