@@ -13,7 +13,7 @@
 		<Title>Switch Resolution Switcher</Title>
 		<Authors>Ignác Brychta</Authors>
 		<Copyright>MIT</Copyright>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

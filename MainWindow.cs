@@ -243,8 +243,23 @@ Display modes for \\.\DISPLAY6:
 
 		SortRefreshRates(result);
 		AddTextModifiers(result);
-
+		RemoveUnsupportedResolutions(result);
 		return result;
+	}
+
+	private static void RemoveUnsupportedResolutions(List<ScreenResolution> screenResolutions)
+	{
+		const int maxWidth = 3840;
+		const int maxHeight = 2160;
+		for(int i = 0; i < screenResolutions.Count; i++)
+		{
+			ScreenResolution resolution = screenResolutions[i];
+			if(resolution.Width > maxWidth && resolution.Height > maxHeight)
+			{
+				screenResolutions.RemoveAt(i);
+				i--;
+			}
+		}
 	}
 
 	private static void AddTextModifiers(List<ScreenResolution> screenResolutions)
