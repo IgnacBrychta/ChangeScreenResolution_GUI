@@ -241,9 +241,10 @@ Display modes for \\.\DISPLAY6:
 			}
 		}
 
+		result.Add(new ScreenResolution() { Width = 4096, Height = 2160 });
+		RemoveUnsupportedResolutions(result);
 		SortRefreshRates(result);
 		AddTextModifiers(result);
-		RemoveUnsupportedResolutions(result);
 		return result;
 	}
 
@@ -254,7 +255,7 @@ Display modes for \\.\DISPLAY6:
 		for(int i = 0; i < screenResolutions.Count; i++)
 		{
 			ScreenResolution resolution = screenResolutions[i];
-			if(resolution.Width > maxWidth && resolution.Height > maxHeight)
+			if(resolution.Width > maxWidth || resolution.Height > maxHeight)
 			{
 				screenResolutions.RemoveAt(i);
 				i--;
