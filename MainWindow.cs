@@ -238,9 +238,8 @@ Display modes for \\.\DISPLAY6:
 			}
 		}
 
-		result.Add(new ScreenResolution() { Width = 4096, Height = 2160 });
 		RemoveUnsupportedResolutions(result);
-		SortResolutions(result);
+		SortResolutions(ref result);
 		AddTextModifiers(result);
 		return result;
 	}
@@ -282,7 +281,7 @@ Display modes for \\.\DISPLAY6:
 		}
 	}
 
-	private static void SortResolutions(List<ScreenResolution> screenResolutions)
+	private static void SortResolutions(ref List<ScreenResolution> screenResolutions)
 	{
 		foreach(ScreenResolution screenResolution in screenResolutions)
 		{
@@ -301,7 +300,8 @@ Display modes for \\.\DISPLAY6:
 			RedirectStandardError = false,
 			RedirectStandardInput = false,
 			Arguments = arguments,
-			FileName = csrExeFullPath
+			FileName = csrExeFullPath,
+			CreateNoWindow = true
 		};
 		Process process = Process.Start(psi)!;
 		process.WaitForExit(new TimeSpan(0, 0, 1));
@@ -365,7 +365,8 @@ Display modes for \\.\DISPLAY6:
 			RedirectStandardError = false,
 			RedirectStandardInput = false,
 			Arguments = $"setdisplay {screenResolution.Width} {screenResolution.Height} {bpc} {refreshRate}",
-			FileName = nircmdExeFullPath
+			FileName = nircmdExeFullPath,
+			CreateNoWindow = true,
 		};
 		_ = Process.Start(psi);
 	}

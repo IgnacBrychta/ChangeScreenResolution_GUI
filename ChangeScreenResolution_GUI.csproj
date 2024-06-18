@@ -10,10 +10,10 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<SignAssembly>False</SignAssembly>
 		<Description>Switches primary display resolution and refresh rate</Description>
-		<Title>Switch Resolution Switcher</Title>
+		<Title>Resolution Switcher</Title>
 		<Authors>Ignác Brychta</Authors>
 		<Copyright>MIT</Copyright>
-		<Version>2.1.0</Version>
+		<Version>2.1.1</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
