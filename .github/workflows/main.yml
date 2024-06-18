@@ -38,8 +38,8 @@ jobs:
         
       - name: Package Application with Velopack
         run: |
-          vpk pack -u ChangeScreenResolution_GUI -p .\publish -e ChangeScreenResolution_GUI.exe -v ${{ steps.get-version.outputs.version }}
+          vpk pack -u ChangeScreenResolution_GUI -p .\publish -e ChangeScreenResolution_GUI.exe -v ${{ steps.get-version.outputs.version }} -i ".\publish\res\cmis logo.ico"
 
       - name: Upload Velopack Release to GitHub
         run: |
-          vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --token ${{ secrets.GITHUB_TOKEN }} --publish --releaseName "ChangeScreenResolution_GUI ${{ steps.get-version.outputs.version }}" --tag "v${{ steps.get-version.outputs.version }}" -i ".\publish\res\cmis logo.ico"
+          vpk upload github --repoUrl https://github.com/IgnacBrychta/ChangeScreenResolution_GUI --token ${{ secrets.GITHUB_TOKEN }} --publish --releaseName "ChangeScreenResolution_GUI ${{ steps.get-version.outputs.version }}" --tag "v${{ steps.get-version.outputs.version }}"
