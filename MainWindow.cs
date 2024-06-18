@@ -96,7 +96,6 @@ Connected display devices:
   [20] \\.\DISPLAY21                 Parsec Virtual Display Adapter
 ";
 #else
-
 			LaunchScreenResolutionUtil("/l");
 #endif
 		string patternDisplays =
@@ -219,10 +218,8 @@ Display modes for \\.\DISPLAY6:
 				width = int.Parse(widthAndHeight[0]);
 				height = int.Parse(widthAndHeight[1]);
 				refreshRate = int.Parse(refreshRateText.Substring(0, refreshRateText.Length - 2));
-
 			}
 			catch (Exception) { continue; }
-
 
 			// resolution already exists
 			ScreenResolution? resolution = result.Find(el => el.Width == width && el.Height == height);
@@ -243,7 +240,7 @@ Display modes for \\.\DISPLAY6:
 
 		result.Add(new ScreenResolution() { Width = 4096, Height = 2160 });
 		RemoveUnsupportedResolutions(result);
-		SortRefreshRates(result);
+		SortResolutions(result);
 		AddTextModifiers(result);
 		return result;
 	}
@@ -285,13 +282,14 @@ Display modes for \\.\DISPLAY6:
 		}
 	}
 
-	private static void SortRefreshRates(List<ScreenResolution> screenResolutions)
+	private static void SortResolutions(List<ScreenResolution> screenResolutions)
 	{
 		foreach(ScreenResolution screenResolution in screenResolutions)
 		{
 			screenResolution.RefreshRates.Sort();
 			screenResolution.RefreshRates.Reverse();
 		}
+		screenResolutions = screenResolutions.OrderByDescending(el => el.Width * el.Height).ToList();
 	}
 
 	private string LaunchScreenResolutionUtil(string arguments)
@@ -374,7 +372,7 @@ Display modes for \\.\DISPLAY6:
 
 	private void FillInComboBoxes()
 	{
-		foreach(ScreenResolution resolution in availableResolutions.OrderByDescending(el => el.Width * el.Height))
+		foreach(ScreenResolution resolution in availableResolutions)
 		{
 			comboBox_resolution.Items.Add(resolution);
 		}
