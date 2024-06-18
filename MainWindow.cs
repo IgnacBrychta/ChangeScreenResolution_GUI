@@ -58,6 +58,7 @@ public partial class MainWindow : Form
 		{
 			comboBox_refreshRate.Items.Add($"{refreshRate} Hz");
 		}
+		comboBox_refreshRate.SelectedIndex = noItemSelectedIndex;
 	}
 
 	private List<ScreenResolution> GetAllAvailableScreenResolutions()
