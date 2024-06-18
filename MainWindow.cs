@@ -215,11 +215,8 @@ Display modes for \\.\DISPLAY6:
 		foreach (Match mode in matches) 
 		{
 			int width, height, refreshRate;
-			try
-			{
-				ParseScreenInfo(mode, out width, out height, out refreshRate);	
-			}
-			catch (Exception) { continue; }
+			ParseScreenInfo(mode, out width, out height, out refreshRate);
+			if (width == -1 || height == -1 || refreshRate == -1) continue;	
 
 			// resolution already exists
 			ScreenResolution? resolution = result.Find(el => el.Width == width && el.Height == height);
@@ -246,11 +243,19 @@ Display modes for \\.\DISPLAY6:
 
 	private void ParseScreenInfo(Match match, out int width, out int height, out int refreshRate)
 	{
-        string[] widthAndHeight = match.Groups["resolution"].Value.Split("x");
-        string refreshRateText = match.Groups["refresh_rate"].Value;
-        width = int.Parse(widthAndHeight[0]);
-        height = int.Parse(widthAndHeight[1]);
-        refreshRate = int.Parse(refreshRateText.Substring(0, refreshRateText.Length - 2));
+		try
+		{
+			string[] widthAndHeight = match.Groups["resolution"].Value.Split("x");
+			string refreshRateText = match.Groups["refresh_rate"].Value;
+			width = int.Parse(widthAndHeight[0]);
+			height = int.Parse(widthAndHeight[1]);
+			refreshRate = int.Parse(refreshRateText.Substring(0, refreshRateText.Length - 2));
+		}
+		catch (Exception e)
+		{
+			MessageBox.Show($"{e.Message}; {match.Groups.Values}");
+			(width, height, refreshRate) = (-1, -1, -1);
+		}
     }
 
 	private static void RemoveUnsupportedResolutions(List<ScreenResolution> screenResolutions)
@@ -338,11 +343,8 @@ Display modes for \\.\DISPLAY6:
 		Match match = Regex.Match(rawText, pattern, RegexOptions.Singleline);
 
         int width, height, refreshRate;
-        try
-        {
-            ParseScreenInfo(match, out width, out height, out refreshRate);
-        }
-        catch (Exception) { throw; }
+        ParseScreenInfo(match, out width, out height, out refreshRate);
+		if (width == -1 || height == -1 || refreshRate == -1) return null;
 
         return new ScreenResolution() 
 		{ 

@@ -13,7 +13,9 @@ internal static class Program
 	{
 		bool recentlyUpdated = false;
 #if RELEASE
-		VelopackApp.Build().WithRestarted((arg) => { recentlyUpdated = true; }).Run();
+		VelopackApp.Build()
+			.WithRestarted((arg) => { recentlyUpdated = true; })
+			.Run();
 		try
 		{
 			if (!recentlyUpdated)
