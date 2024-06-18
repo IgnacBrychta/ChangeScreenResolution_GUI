@@ -11,12 +11,16 @@ internal static class Program
 	[STAThread]
 	static void Main()
 	{
+		bool recentlyUpdated = false;
 #if RELEASE
-		VelopackApp.Build().Run();
+		VelopackApp.Build().WithRestarted((arg) => { recentlyUpdated = true; }).Run();
 		try
 		{
-			Task update = AppUpdater.CheckForUpdateAndApply();
-			update.Wait();
+			if (!recentlyUpdated)
+			{
+				Task update = AppUpdater.CheckForUpdateAndApply();
+				update.Wait();
+			}
 		}
 		catch (Exception)
 		{
