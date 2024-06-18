@@ -14,14 +14,14 @@ internal static class AppUpdater
 			return; // no update available
 
 		DialogResult result = MessageBox.Show(
-			"New release is available. Click OK to download and install it, click Cancel to close the program.",
+			"New release is available. Click OK to download and install it, click Cancel to skip the newest version.",
 			"New release available",
 			MessageBoxButtons.OKCancel,
 			MessageBoxIcon.Question
 			);
 		if (result != DialogResult.OK)
 		{
-			Environment.Exit(1);
+			return;
 		}
 
 		// download new version

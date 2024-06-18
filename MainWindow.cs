@@ -251,10 +251,15 @@ Display modes for \\.\DISPLAY6:
 			height = int.Parse(widthAndHeight[1]);
 			refreshRate = int.Parse(refreshRateText.Substring(0, refreshRateText.Length - 2));
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
-			MessageBox.Show($"{e.Message}; {match.Groups.Values}");
-			(width, height, refreshRate) = (-1, -1, -1);
+			MessageBox.Show(
+				"This app only works with the Parsec Virtual Display Driver, set as the primary monitor.",
+				"Incomaptible setup",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Error
+				);
+			throw;
 		}
     }
 
