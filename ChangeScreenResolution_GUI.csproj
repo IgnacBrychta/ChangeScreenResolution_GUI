@@ -13,7 +13,7 @@
 		<Title>Switch Resolution Switcher</Title>
 		<Authors>Ignác Brychta</Authors>
 		<Copyright>MIT</Copyright>
-		<Version>1.0.15</Version>
+		<Version>2.0.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -29,6 +29,7 @@
 	<ItemGroup>
 		<EmbeddedResource Include="nircmd\nircmd.exe" />
 		<EmbeddedResource Include="res\cmis logo.ico" />
+		<EmbeddedResource Include="nircmd\taukenkorb_ChangeScreenResolution.exe" />
 	</ItemGroup>
 
 	<ItemGroup>

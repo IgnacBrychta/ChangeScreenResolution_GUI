@@ -4,7 +4,8 @@ internal sealed class ScreenResolution
 {
 	internal int Width { get; init; }
 	internal int Height { get; init; }
-	internal string Text { get; init; } = "";
+	internal List<int> RefreshRates { get; init; }
+	internal string Text { get; set; } = "";
 
 	public override string ToString()
 	{
