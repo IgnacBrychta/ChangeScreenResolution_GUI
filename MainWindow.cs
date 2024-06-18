@@ -54,11 +54,12 @@ public partial class MainWindow : Form
 		ScreenResolution screenResolution = availableResolutions[comboBox_resolution.SelectedIndex];
 
 		comboBox_refreshRate.Items.Clear();
+		comboBox_refreshRate.SelectedIndex = noItemSelectedIndex;
+		comboBox_refreshRate.ResetText();
 		foreach(int refreshRate in screenResolution.RefreshRates)
 		{
 			comboBox_refreshRate.Items.Add($"{refreshRate} Hz");
 		}
-		comboBox_refreshRate.SelectedIndex = noItemSelectedIndex;
 	}
 
 	private List<ScreenResolution> GetAllAvailableScreenResolutions()
